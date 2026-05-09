@@ -840,6 +840,8 @@ header.scrolled .nav-links a.active {
     .hero-badge {
         margin-top: 0 !important;
         margin-bottom: 10px !important;
+        font-size: 0.75rem !important;
+        padding: 6px 16px !important;
     }
 
     .hero-content p,
