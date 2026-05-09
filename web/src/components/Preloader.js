@@ -17,8 +17,11 @@ const Preloader = () => {
 
     return (
         <div className={`preloader ${fadeOut ? 'fade-out' : ''}`}>
-            <div className="preloader-logo">
-                <img src="/images/Group 85.png" alt="Simbi Technologies" />
+            <div className="preloader-content">
+                <div className="preloader-logo">
+                    <img src="/images/Group 87.png" alt="Simbi Technologies" />
+                </div>
+                <div className="preloader-bar"></div>
             </div>
         </div>
     );
