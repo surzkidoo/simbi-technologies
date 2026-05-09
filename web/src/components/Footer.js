@@ -1,7 +1,39 @@
-import React from 'react';
+"use client";
+import React, { useState } from 'react';
 import Link from 'next/link';
 
 const Footer = () => {
+    const [email, setEmail] = useState('');
+    const [status, setStatus] = useState('idle'); // idle, loading, success, error
+    const [message, setMessage] = useState('');
+
+    const handleSubscribe = async (e) => {
+        e.preventDefault();
+        setStatus('loading');
+
+        try {
+            const res = await fetch('/api/subscribe', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ email }),
+            });
+
+            const data = await res.json();
+
+            if (res.ok) {
+                setStatus('success');
+                setEmail('');
+                setMessage('Thank you for subscribing!');
+            } else {
+                setStatus('error');
+                setMessage(data.error || 'Something went wrong.');
+            }
+        } catch (err) {
+            setStatus('error');
+            setMessage('Failed to connect to the server.');
+        }
+    };
+
     return (
         <footer className="main-footer">
             <div className="container">
@@ -46,10 +78,29 @@ const Footer = () => {
                     <div className="footer-newsletter">
                         <h3>Growth Insights</h3>
                         <p>Subscribe to our strategic innovation report and scale your business with technology.</p>
-                        <form className="newsletter-form" action="https://formsubmit.co/abubakarsurzkidoo@gmail.com" method="POST">
-                            <input type="email" name="email" placeholder="Business Email" required />
-                            <button type="submit">Join <i className="fas fa-arrow-right"></i></button>
+                        <form className="newsletter-form" onSubmit={handleSubscribe}>
+                            <input 
+                                type="email" 
+                                value={email}
+                                onChange={(e) => setEmail(e.target.value)}
+                                placeholder="Business Email" 
+                                required 
+                                disabled={status === 'loading'}
+                            />
+                            <button type="submit" className={status === 'loading' ? 'loading' : ''} disabled={status === 'loading'}>
+                                {status === 'loading' ? (
+                                    <span className="spinner"></span>
+                                ) : (
+                                    <>Join <i className="fas fa-arrow-right"></i></>
+                                )}
+                            </button>
                         </form>
+                        {message && (
+                            <div className={`form-response ${status}`} data-aos="fade-up">
+                                <i className={`fas ${status === 'success' ? 'fa-check-circle' : 'fa-exclamation-circle'}`}></i>
+                                <span>{message}</span>
+                            </div>
+                        )}
                         <div className="footer-cta-link" style={{ marginTop: '20px' }}>
                             <Link href="/contact" style={{ color: 'var(--primary-color)', fontWeight: 700, textDecoration: 'none', fontSize: '0.9rem' }}>Work with us <i className="fas fa-chevron-right"></i></Link>
                         </div>
